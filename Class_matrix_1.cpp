@@ -26,7 +26,7 @@ public:
 	Matrix gaussian();
 	int determinant();
 	vector <long double> kramer();
-	vector <long double> gauss();
+	int solve();
 	void output_mat();
 };
 
@@ -122,68 +122,54 @@ int Matrix::determinant() {
 }
 
 
-vector <long double> Matrix::gauss() {
-	long double frac;
-	int infinite, check;
-	vector <vector <long double>> coef(rows - 1, vector <long double>(lines));
+int Matrix::solve() {
+	vector <vector <long double>> coef(lines, vector <long double>(rows - 1));
+	vector <vector <long double>> ans(rows - 1, vector <long double>(rows, 0));
 	vector <long double> num(lines);
-	vector <long double> zero(0);
+	vector <bool> random(rows - 1, true);
+	bool zero = true;
+	int pos = rows;
 	for (int i = 0; i < lines; i++) {
 		for (int j = 0; j < rows - 1; j++) {
 			coef[i][j] = arr[i][j];
 		}
 		num[i] = arr[i][rows - 1];
 	}
-	for (int i = 0; i < lines; i++) {
-		for (int j = i; j < lines; j++) {
-			if (coef[j][i] != 0) {
-				for (int pos = i; pos < lines; pos++) {
-					swap(coef[j][pos], coef[i][pos]);
-					swap(num[i], num[j]);
+	for (int i = lines - 1; i > -1; i--) {
+		for (int j = rows - 2; j > -1; j--) {
+			if (coef[i][j] != 0) {
+				zero = false;
+				pos = j;
+			}
+		}
+		if (zero) {
+			if (num[i] != 0) {
+				cout << "No solutions" << endl;
+				return 0;
+			}
+		}
+		else {
+			random[pos] = false;
+			for (int t = pos + 1; t < rows - 1; t++) {
+				if (random[t]) {
+					ans[pos][t] = (-1) * coef[i][t] / coef[i][pos];
 				}
-				for (int st = j + 1; st < lines; st++) {
-					frac = coef[st][i] / coef[i][i];
-					num[st] -= frac * num[i];
-					for (int el = i; el < lines; el++) {
-						coef[st][el] -= frac * coef[i][el];
+				else {
+					for (int d = 0; d < rows; d++) {
+						ans[pos][d] = ((-1) * coef[i][t] / coef[i][pos]) * ans[t][d];
 					}
 				}
-				break;
 			}
 		}
 	}
-	infinite = 0;
-	for (int line = lines - 1; line > -1; line--) {
-		check = 0;
-		for (int pos = line; pos < lines; pos++) {
-			if (coef[line][pos] != 0) {
-				check = 1;
-				break;
-			}
+
+	for (int i = 0; i < rows - 1; i++) {
+		for (int j = 0; j < rows; j++) {
+			cout << ans[i][j] << " ";
 		}
-		if (check == 0) {
-			infinite = 1;
-			if (num[line] != 0) {
-				cout << "No solutions";
-				return zero;
-			}
-		}
-		if (infinite == 0) {
-			num[line] /= coef[line][line];
-			coef[line][line] = 1;
-			for (int upline = line - 1; upline > -1; upline--) {
-				num[upline] -= num[line] * coef[upline][line];
-				coef[upline][line] = 0;
-			}
-		}
+		cout << endl;
 	}
-	if (infinite == 1) {
-		cout << "infinitely many solutions";
-		return zero;
-	}
-	cout << "\n";
-	cout << "\n";
-	return num;
+
 
 }
 
@@ -201,7 +187,6 @@ Matrix Matrix::gaussian() {
 		for (int k = pos; k < rows; k++) {
 			bool found = false;
 			for (int j = i; j < lines; j++) {
-				cout << "started from: " << j << " current line: " << k << " current position: " << k << endl;
 				if ((coef[j][k] != 0) && (not found)) {
 					pos = k;
 					found = true;
@@ -215,7 +200,6 @@ Matrix Matrix::gaussian() {
 					for (int v = pos; v < rows; v++) {
 
 						coef[j][v] -= t * coef[i][v];
-						cout << "coef " << j << k << " : " << coef[j][k];
 					}
 				}
 			}
@@ -286,6 +270,9 @@ int main() {
 		}
 	}
 	cin >> lines1 >> rows1;
+	if (s == "solve") {
+		rows1 += 1;
+	}
 	vector <vector <long double>> mat1(lines1, vector <long double>(rows1));
 	int i, j;
 	for (int i = 0; i < lines1; i++) {
@@ -351,6 +338,11 @@ int main() {
 	if (s == "gauss") {
 		cout << "Gaussian elimination: " << endl;
 		(a.gaussian()).output_mat();
+	}
+	
+	if (s == "solve") {
+		cout << "Solution: " << endl;
+		(a.gaussian()).solve();
 	}
 	return 0;
 }
