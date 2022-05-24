@@ -11,3 +11,5 @@ det — calculate matrix determinant
 m*\n — multiply matrix by a number
 
 m^t — transponse matrix
+
+gauss — gaussian elimination
