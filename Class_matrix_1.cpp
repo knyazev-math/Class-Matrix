@@ -16,20 +16,21 @@ const int INF = 1000000000;
 
 class Matrix {
 	int lines, rows;
-	vector <vector <int>> arr;
+	vector <vector <long double>> arr;
 public:
-	Matrix(vector <vector <int>>);
+	Matrix(vector <vector <long double>>);
 	Matrix operator+ (Matrix);
 	Matrix operator* (int);
 	Matrix operator* (Matrix);
 	Matrix flip();
+	Matrix gaussian();
 	int determinant();
-	vector <double> kramer();
-	vector <double> gauss();
+	vector <long double> kramer();
+	vector <long double> gauss();
 	void output_mat();
 };
 
-Matrix::Matrix(vector <vector <int>> m) {
+Matrix::Matrix(vector <vector <long double>> m) {
 	arr = m;
 	rows = m[0].size();
 	lines = m.size();
@@ -37,7 +38,7 @@ Matrix::Matrix(vector <vector <int>> m) {
 
 
 Matrix Matrix::operator+(Matrix m) {
-	vector <vector <int>> ans(lines, vector <int>(rows));
+	vector <vector <long double>> ans(lines, vector <long double>(rows));
 	if ((lines == m.lines) && (rows == m.rows)) {
 		int i, j;
 		for (int i = 0; i < lines; i++) {
@@ -51,7 +52,7 @@ Matrix Matrix::operator+(Matrix m) {
 
 
 Matrix Matrix::operator*(Matrix m) {
-	vector <vector <int>> ans(lines, vector <int>(m.rows));
+	vector <vector <long double>> ans(lines, vector <long double>(m.rows));
 	if (rows == m.lines) {
 		int i, j, k;
 		for (int i = 0; i < lines; i++) {
@@ -70,7 +71,7 @@ Matrix Matrix::operator*(Matrix m) {
 
 
 Matrix Matrix::operator*(int n) {
-	vector <vector <int>> ans(lines, vector <int>(rows));
+	vector <vector <long double>> ans(lines, vector <long double>(rows));
 	int i, j;
 	for (int i = 0; i < lines; i++) {
 		for (int j = 0; j < rows; j++) {
@@ -82,7 +83,7 @@ Matrix Matrix::operator*(int n) {
 
 
 Matrix Matrix::flip() {
-	vector <vector <int>> ans(rows, vector <int>(lines));
+	vector <vector <long double>> ans(rows, vector <long double>(lines));
 	int x, y;
 	for (int x = 0; x < lines; x++) {
 		for (int y = 0; y < rows; y++) {
@@ -100,8 +101,7 @@ int Matrix::determinant() {
 		if (lines == 1) {
 			return arr[0][0];
 		}
-		vector <vector <int>> ivan(lines - 1, vector <int>(rows - 1));
-		int elem, row, pos;
+		vector <vector <long double>> ivan(lines - 1, vector <long double>(rows - 1));
 		for (int elem = 0; elem < rows; elem++) {
 			for (int row = 0; row < rows; row++) {
 				if (row != elem) {
@@ -122,12 +122,12 @@ int Matrix::determinant() {
 }
 
 
-vector <double> Matrix::gauss() {
-	double frac;
+vector <long double> Matrix::gauss() {
+	long double frac;
 	int infinite, check;
-	vector <vector <double>> coef(rows - 1, vector <double>(lines));
-	vector <double> num(lines);
-	vector <double> zero(0);
+	vector <vector <long double>> coef(rows - 1, vector <long double>(lines));
+	vector <long double> num(lines);
+	vector <long double> zero(0);
 	for (int i = 0; i < lines; i++) {
 		for (int j = 0; j < rows - 1; j++) {
 			coef[i][j] = arr[i][j];
@@ -189,10 +189,47 @@ vector <double> Matrix::gauss() {
 
 
 
+Matrix Matrix::gaussian() {
+	vector <vector <long double>> coef(lines, vector <long double>(rows));
+	for (int i = 0; i < lines; i++) {
+		for (int j = 0; j < rows; j++) {
+			coef[i][j] = arr[i][j];
+		}
+	}
+	int pos = 0;
+	for (int i = 0; i < lines; i++){
+		for (int k = pos; k < rows; k++) {
+			bool found = false;
+			for (int j = i; j < lines; j++) {
+				cout << "started from: " << j << " current line: " << k << " current position: " << k << endl;
+				if ((coef[j][k] != 0) && (not found)) {
+					pos = k;
+					found = true;
+					for (int u = k; u < rows; u++) {
+						swap(coef[i][u], coef[j][u]);
+					}
+				}
+				if ((j != i) && (found)) {
+					for (int v = pos; v < rows; v++) {
+						coef[j][v] -= (coef[j][pos] / coef[i][pos]) * coef[i][v];
+						cout << "coef " << j << k << " : " << coef[j][k];
+					}
+				}
+			}
+			if (found) {
+				break;
+			}
+			
+		}
 
-vector <double> Matrix::kramer() {
-	double d, d_0;
-	vector <vector <int>> coef(rows - 1, vector <int>(lines));
+	}
+	return Matrix(coef);
+}
+
+
+vector <long double> Matrix::kramer() {
+	long double d, d_0;
+	vector <vector <long double>> coef(rows - 1, vector <long double>(lines));
 	for (int i = 0; i < rows - 1; i++) {
 		for (int j = 0; j < lines; j++) {
 			coef[i][j] = arr[i][j];
@@ -202,8 +239,8 @@ vector <double> Matrix::kramer() {
 	if (d_0 == 0) {
 		return {};
 	}
-	vector <double> ans(rows - 1);
-	vector <vector <int>> help(rows - 1, vector <int>(lines));
+	vector <long double> ans(rows - 1);
+	vector <vector <long double>> help(rows - 1, vector <long double>(lines));
 	for (int j = 0; j < lines; j++) {
 		help = coef;
 		for (int i = 0; i < rows - 1; i++) {
@@ -246,7 +283,7 @@ int main() {
 		}
 	}
 	cin >> lines1 >> rows1;
-	vector <vector <int>> mat1(lines1, vector <int>(rows1));
+	vector <vector <long double>> mat1(lines1, vector <long double>(rows1));
 	int i, j;
 	for (int i = 0; i < lines1; i++) {
 		if (s != "solve") {
@@ -264,7 +301,7 @@ int main() {
 	if ((s == "m * m") || (s == "m *m") || (s == "m* m") || (s == "m*m") || (s == "m + m") || (s == "m +m") || (s == "m+ m") || (s == "m+m")) {
 		cout << "Enter second matrix sides (strings, rows): " << endl;
 		cin >> lines2 >> rows2;
-		vector <vector <int>> mat2(lines2, vector <int>(rows2));
+		vector <vector <long double>> mat2(lines2, vector <long double>(rows2));
 		for (int i = 0; i < lines2; i++) {
 			cout << "Enter the " << i + 1 << " string in second matrix: " << endl;
 			for (int j = 0; j < rows2; j++) {
@@ -307,6 +344,10 @@ int main() {
 	if (s == "det") {
 		cout << "Matrix determinant: " << endl;
 		cout << a.determinant();
+	}
+	if (s == "gauss") {
+		cout << "Gaussian elimination: " << endl;
+		(a.gaussian()).output_mat();
 	}
 	return 0;
 }
