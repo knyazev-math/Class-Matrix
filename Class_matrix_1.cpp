@@ -210,8 +210,11 @@ Matrix Matrix::gaussian() {
 					}
 				}
 				if ((j != i) && (found)) {
+
+					long double t = coef[j][pos] / coef[i][pos];
 					for (int v = pos; v < rows; v++) {
-						coef[j][v] -= (coef[j][pos] / coef[i][pos]) * coef[i][v];
+
+						coef[j][v] -= t * coef[i][v];
 						cout << "coef " << j << k << " : " << coef[j][k];
 					}
 				}
