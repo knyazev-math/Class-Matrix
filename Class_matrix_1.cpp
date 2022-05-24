@@ -20,7 +20,7 @@ class Matrix {
 public:
 	Matrix(vector <vector <long double>>);
 	Matrix operator+ (Matrix);
-	Matrix operator* (int);
+	Matrix operator* (long double);
 	Matrix operator* (Matrix);
 	Matrix flip();
 	Matrix gaussian();
@@ -70,7 +70,7 @@ Matrix Matrix::operator*(Matrix m) {
 }
 
 
-Matrix Matrix::operator*(int n) {
+Matrix Matrix::operator*(long double n) {
 	vector <vector <long double>> ans(lines, vector <long double>(rows));
 	int i, j;
 	for (int i = 0; i < lines; i++) {
@@ -150,6 +150,7 @@ int Matrix::solve() {
 		}
 		else {
 			random[pos] = false;
+			ans[pos][rows - 1] = num[i] / coef[i][pos];
 			for (int t = pos + 1; t < rows - 1; t++) {
 				if (random[t]) {
 					ans[pos][t] = (-1) * coef[i][t] / coef[i][pos];
@@ -253,7 +254,8 @@ void Matrix::output_mat() {
 }
 
 int main() {
-	int lines1, rows1, lines2, rows2, num;
+	int lines1, rows1, lines2, rows2;
+	long double num;
 	cout << "Hello! This program does basic operations with matrices" << endl;
 	string s;
 	cin >> s;
