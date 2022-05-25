@@ -373,8 +373,6 @@ int main() {
 	
 	if (s == "solve") {
 		cout << "Solution: " << endl;
-		(a.gaussian()).output_mat();
-		cout << endl;
 		(a.gaussian()).solve();
 	}
 	return 0;
