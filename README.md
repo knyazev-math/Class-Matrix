@@ -1,6 +1,7 @@
 # Class-Matrix
 Class Matrix Realisation C++
 
+\n
 
 Commands:
   1) m*\m — calculate multiplication of two matrices
