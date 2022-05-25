@@ -58,7 +58,7 @@
   
   <enter n^th string of the matrix>
     
-  Example:
+  #### Example:
   
   m+m
   
@@ -95,7 +95,7 @@
   <enter n^th string of the matrix>
   
   
-  example:
+  #### Example:
   
   gauss
   
@@ -127,7 +127,7 @@
   <enter a number to multiply the matrix>
   
   
-  example:
+  #### Example:
   
   m*\n
   
@@ -159,7 +159,7 @@
   <enter the coefficients of the n^th equation>
     
     
-  example: having a system of linear equations x + 3y = 2, 2x - y = -10
+  #### Example: having a system of linear equations x + 3y = 2, 2x - y = -10
   
   2 2
     
@@ -168,7 +168,7 @@
   2 -1 3
     
     
- in general: having a system of linear equations a_{i, 1}x_1 + a_{i, 2}x_2 + ... + a_{i, m}x_m = b_i, i = 1... n
+ #### In general: having a system of linear equations a_{i, 1}x_1 + a_{i, 2}x_2 + ... + a_{i, m}x_m = b_i, i = 1... n
  
  n m
     
