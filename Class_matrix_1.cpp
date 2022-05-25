@@ -127,7 +127,6 @@ int Matrix::solve() {
 	vector <vector <long double>> ans(rows - 1, vector <long double>(rows, 0));
 	vector <long double> num(lines);
 	vector <bool> random(rows - 1, true);
-	bool zero = true;
 	int pos = rows;
 	for (int i = 0; i < lines; i++) {
 		for (int j = 0; j < rows - 1; j++) {
@@ -136,6 +135,7 @@ int Matrix::solve() {
 		num[i] = arr[i][rows - 1];
 	}
 	for (int i = lines - 1; i > -1; i--) {
+		bool zero = true;
 		for (int j = rows - 2; j > -1; j--) {
 			if (coef[i][j] != 0) {
 				zero = false;
@@ -150,27 +150,56 @@ int Matrix::solve() {
 		}
 		else {
 			random[pos] = false;
-			ans[pos][rows - 1] = num[i] / coef[i][pos];
+
+			for (int s = pos + 1; s < rows - 1; s++) {
+				coef[i][s] = coef[i][s] / coef[i][pos];
+			}
+			num[i] /= coef[i][pos];
+			ans[pos][rows - 1] = num[i];
+			coef[i][pos] = 1;
+
+
+
 			for (int t = pos + 1; t < rows - 1; t++) {
 				if (random[t]) {
-					ans[pos][t] = (-1) * coef[i][t] / coef[i][pos];
+					ans[pos][t] += (-1) * coef[i][t];
 				}
 				else {
-					for (int d = 0; d < rows; d++) {
-						ans[pos][d] = ((-1) * coef[i][t] / coef[i][pos]) * ans[t][d];
+					for (int d = t + 1; d < rows; d++) {
+						ans[pos][d] += ((-1) * coef[i][t]) * ans[t][d];
 					}
+					ans[pos][t] = 0;
 				}
 			}
 		}
 	}
 
 	for (int i = 0; i < rows - 1; i++) {
-		for (int j = 0; j < rows; j++) {
-			cout << ans[i][j] << " ";
+		bool zero = true;
+		if (random[i]) {
+			cout << "x_" << i + 1 << " is a random real number" << endl;
 		}
-		cout << endl;
+		else {
+			cout << "x_" << i + 1 << " = ";
+			for (int j = 0; j < rows - 1; j++) {
+				if (ans[i][j] > 0) {
+					cout << "+ " << abs(ans[i][j]) << " * x_" << j + 1 << " ";
+				}
+				else {
+					if (ans[i][j] < 0) {
+						cout << "- " << abs(ans[i][j]) << " * x_" << j + 1 << " ";
+					}
+				}
+			}
+			if (ans[i][rows - 1] > 0) {
+				cout << "+ " << ans[i][rows - 1] << endl;
+			}
+			if (ans[i][rows - 1] < 0) {
+				cout << "- " << abs(ans[i][rows - 1]) << endl;
+			}
+		}
 	}
-
+	return 0;
 
 }
 
@@ -344,6 +373,8 @@ int main() {
 	
 	if (s == "solve") {
 		cout << "Solution: " << endl;
+		(a.gaussian()).output_mat();
+		cout << endl;
 		(a.gaussian()).solve();
 	}
 	return 0;
