@@ -24,7 +24,7 @@ public:
 	Matrix operator* (Matrix);
 	Matrix flip();
 	Matrix gaussian();
-	Matrix jardin();
+	Matrix jordan();
 	int determinant();
 	vector <long double> kramer();
 	int solve();
@@ -96,7 +96,7 @@ Matrix Matrix::flip() {
 }
 
 
-Matrix Matrix::jardin() {
+Matrix Matrix::jordan() {
 	long double b = (-1) * (arr[0][0] + arr[1][1]);
 	long double c = arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
 	if (b * b < 8 * c) {
@@ -310,8 +310,8 @@ int main() {
 	cout << "Hello! This program does basic operations with matrices" << endl;
 	string s;
 	cin >> s;
-	if (s == "jardin") {
-		cout << "Warning! This program calculates the jardin from only for matrices 2x2; this feature will be improved later" << endl;
+	if (s == "jordan") {
+		cout << "Warning! This program calculates the jordan from only for matrices 2x2; this feature will be improved later" << endl;
 	}
 	if ((s == "m * m") || (s == "m *m") || (s == "m* m") || (s == "m*m") || (s == "m + m") || (s == "m +m") || (s == "m+ m") || (s == "m+m")) {
 		cout << "Enter first matrix sides (strings, rows): " << endl;
@@ -400,8 +400,8 @@ int main() {
 		cout << "Solution: " << endl;
 		(a.gaussian()).solve();
 	}
-	if (s == "jardin") {
-		cout << "Jardin form: " << endl;
+	if (s == "jordan") {
+		cout << "Jordan form: " << endl;
 		(a.jardin()).output_mat();
 	}
 	return 0;
