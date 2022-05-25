@@ -24,6 +24,7 @@ public:
 	Matrix operator* (Matrix);
 	Matrix flip();
 	Matrix gaussian();
+	Matrix jardin();
 	int determinant();
 	vector <long double> kramer();
 	int solve();
@@ -91,6 +92,27 @@ Matrix Matrix::flip() {
 		}
 	}
 	return Matrix(ans);
+
+}
+
+
+Matrix Matrix::jardin() {
+	long double b = (-1) * (arr[0][0] + arr[1][1]);
+	long double c = arr[0][0] * arr[1][1] - arr[0][1] * arr[1][0];
+	if (b * b < 8 * c) {
+		cout << "Jordan form doesn't exist" << endl;
+	}
+	else {
+		long double x1 = (sqrt(b * b - 8 * c) - b) / 2;
+		long double x2 = (sqrt(b * b - 8 * c) + b) / (-2);
+		vector <vector <long double>> ans(2, vector <long double>(2));
+		ans[0][0] = x1;
+		ans[1][1] = x2;
+		if (x1 == x2) {
+			ans[0][1] = 1;
+		}
+		return Matrix(ans);
+	}
 
 }
 
@@ -288,6 +310,9 @@ int main() {
 	cout << "Hello! This program does basic operations with matrices" << endl;
 	string s;
 	cin >> s;
+	if (s == "jardin") {
+		cout << "Warning! This program calculates the jardin from only for matrices 2x2; this feature will be improved later" << endl;
+	}
 	if ((s == "m * m") || (s == "m *m") || (s == "m* m") || (s == "m*m") || (s == "m + m") || (s == "m +m") || (s == "m+ m") || (s == "m+m")) {
 		cout << "Enter first matrix sides (strings, rows): " << endl;
 	}
@@ -374,6 +399,10 @@ int main() {
 	if (s == "solve") {
 		cout << "Solution: " << endl;
 		(a.gaussian()).solve();
+	}
+	if (s == "jardin") {
+		cout << "Jardin form: " << endl;
+		(a.jardin()).output_mat();
 	}
 	return 0;
 }
