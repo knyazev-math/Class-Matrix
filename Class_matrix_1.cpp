@@ -206,18 +206,24 @@ int Matrix::solve() {
 			for (int j = 0; j < rows - 1; j++) {
 				if (ans[i][j] > 0) {
 					cout << "+ " << abs(ans[i][j]) << " * x_" << j + 1 << " ";
+					zero = false;
 				}
 				else {
 					if (ans[i][j] < 0) {
 						cout << "- " << abs(ans[i][j]) << " * x_" << j + 1 << " ";
+						zero = false;
 					}
 				}
 			}
-			if (ans[i][rows - 1] > 0) {
+			if ((ans[i][rows - 1] > 0) && (not zero)) {
 				cout << "+ " << ans[i][rows - 1] << endl;
 			}
-			if (ans[i][rows - 1] < 0) {
+			if ((ans[i][rows - 1] < 0) && (not zero)) {
 				cout << "- " << abs(ans[i][rows - 1]) << endl;
+			}
+
+			if (zero) {
+				cout << ans[i][rows - 1] << endl;
 			}
 		}
 	}
