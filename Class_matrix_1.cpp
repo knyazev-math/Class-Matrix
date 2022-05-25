@@ -103,9 +103,9 @@ Matrix Matrix::jordan() {
 		cout << "Jordan form doesn't exist" << endl;
 	}
 	else {
+	    vector <vector <long double>> ans(2, vector <long double>(2));
 		long double x1 = (sqrt(b * b - 8 * c) - b) / 2;
 		long double x2 = (sqrt(b * b - 8 * c) + b) / (-2);
-		vector <vector <long double>> ans(2, vector <long double>(2));
 		ans[0][0] = x1;
 		ans[1][1] = x2;
 		if (x1 == x2) {
@@ -113,7 +113,8 @@ Matrix Matrix::jordan() {
 		}
 		return Matrix(ans);
 	}
-
+	vector <vector <long double>> error(1, vector <long double>(1));
+	return error;
 }
 
 
@@ -408,7 +409,7 @@ int main() {
 	}
 	if (s == "jordan") {
 		cout << "Jordan form: " << endl;
-		(a.jardin()).output_mat();
+		(a.jordan()).output_mat();
 	}
 	return 0;
 }
