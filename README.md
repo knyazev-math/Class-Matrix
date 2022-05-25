@@ -1,9 +1,7 @@
 # Class-Matrix
-Class Matrix Realisation C++
 
-\n
 
-Commands:
+## Commands:
   1) m*\m — calculate multiplication of two matrices
 
   2) m+m — calculate sum of two matrices
@@ -23,10 +21,10 @@ Commands:
 
 
 
-Inputs format:
+## Inputs format:
 
 
-1) Operation with two matrices
+### 1) Operation with two matrices
 
 
   <command: m*\m or m+m>
@@ -77,7 +75,7 @@ Inputs format:
   0 1
     
     
-2) Operation with one matrix
+### 2) Operation with one matrix
 
 
   <command: det, m^t, gauss or jordan>
@@ -108,7 +106,7 @@ Inputs format:
   4 5 6
   
   
-3) Multiplying matrix by a number
+### 3) Multiplying matrix by a number
 
   <command: m*\n>
   
@@ -141,7 +139,8 @@ Inputs format:
   
   7
   
-4) Solve a system of linear equations
+  
+### 4) Solve a system of linear equations
   
   <command: solve>
     
