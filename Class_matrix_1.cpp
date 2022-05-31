@@ -1,4 +1,4 @@
-#include <iostream>
+ #include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #include <cmath>
@@ -14,6 +14,161 @@ using namespace std;
 
 const int INF = 1000000000;
 
+
+class Polynom {
+	int deg;
+	vector <long double> pol;
+public:
+	Polynom(vector <long double>);
+	Polynom operator+(Polynom);
+	Polynom operator*(Polynom);
+	Polynom operator*(long double);
+	Polynom operator/(Polynom);
+	Polynom derivative(Polynom);
+	void output_pol();
+};
+
+
+
+
+Polynom::Polynom(vector <long double> m) {
+	int pos = -1;
+	for (int i = m.size() - 1; i > -1; i--) {
+		if (m[i] != 0) {
+			pos = i;
+			break;
+		}
+	}
+	if (pos == -1) {
+		pos = 1;
+	}
+	deg = pos;
+	pol = m;
+
+}
+
+
+Polynom Polynom:: operator+(Polynom p) {
+	vector <long double> ans(max(deg, p.deg) + 1);
+	for (int i = 0; i < ans.size(); i++) {
+		ans[i] = pol[i] + p.pol[i];
+	}
+	return Polynom(ans);
+}
+
+
+Polynom Polynom:: operator*(long double a) {
+	vector <long double> ans(deg + 1);
+	for (int i = 0; i < ans.size(); i++) {
+		ans[i] = pol[i] * a;
+	}
+	return Polynom(ans);
+}
+
+
+Polynom Polynom:: operator*(Polynom p) {
+	vector <long double> ans(deg + p.deg + 1);
+	for (int i = 0; i < deg + 1; i++) {
+		for (int j = 0; j < p.deg + 1; j++) {
+			ans[i + j] += pol[i] * p.pol[j];
+		}
+	}
+	return Polynom(ans);
+}
+
+
+Polynom Polynom:: operator/(Polynom p) {
+	vector <long double> ans(p.deg);
+	for (int i = deg - 1; i > -1; i--) {
+		for (int j = 0; j < p.deg; j++) {
+			ans[0] = 0;
+		}
+	}
+	return Polynom(ans);
+}
+
+
+void Polynom::output_pol() {
+	bool zero = true;
+	for (int i = deg; i > -1; i--) {
+		if (pol[i] * pol[i] == 1) {
+			if (zero) {
+				if (i == 0) {
+					cout << pol[i];
+				}
+				else {
+					if (pol[i] == 1) {
+						cout << "x^" << i;
+					}
+					else {
+						cout << "-x^" << i;
+					}
+				}
+			}
+			else {
+				if (i == 0) {
+					if (pol[i] == 1) {
+						cout << " + " << pol[i];
+					}
+					else {
+						cout << " - " << pol[i];
+					}
+				}
+				else {
+					if (pol[i] == 1) {
+						cout << " + " << "x^" << i;
+					}
+					else {
+						cout << " - " << "x^" << i;
+					}
+				}
+			}
+			zero = false;
+		}
+		else {
+			if (pol[i] != 0) {
+				if (zero) {
+					if (i == 0) {
+						cout << pol[i];
+					}
+					else {
+						cout << pol[i] << "*x^" << i;
+					}
+				}
+				else {
+					if (i == 0) {
+						if (pol[i] > 0) {
+							cout << " + " << pol[i];
+						}
+						else {
+							cout << pol[i];
+						}
+					}
+					else {
+						if (pol[i] > 0) {
+							cout << " + " << pol[i] << "*x^" << i;
+						}
+						else {
+							cout << pol[i] << "*x^" << i;
+						}
+					}
+				}
+				zero = false;
+
+			}
+		}
+	}
+
+	if (zero) {
+		cout << "0";
+	}
+	cout << endl;
+}
+
+
+
+
+
 class Matrix {
 	int lines, rows;
 	vector <vector <long double>> arr;
@@ -25,11 +180,13 @@ public:
 	Matrix flip();
 	Matrix gaussian();
 	Matrix jordan();
-	int determinant();
+	long double determinant();
+	Polynom charac(Matrix b);
 	vector <long double> kramer();
 	int solve();
 	void output_mat();
 };
+
 
 Matrix::Matrix(vector <vector <long double>> m) {
 	arr = m;
@@ -103,9 +260,9 @@ Matrix Matrix::jordan() {
 		cout << "Jordan form doesn't exist" << endl;
 	}
 	else {
-	    vector <vector <long double>> ans(2, vector <long double>(2));
 		long double x1 = (sqrt(b * b - 8 * c) - b) / 2;
 		long double x2 = (sqrt(b * b - 8 * c) + b) / (-2);
+		vector <vector <long double>> ans(2, vector <long double>(2));
 		ans[0][0] = x1;
 		ans[1][1] = x2;
 		if (x1 == x2) {
@@ -113,13 +270,55 @@ Matrix Matrix::jordan() {
 		}
 		return Matrix(ans);
 	}
-	vector <vector <long double>> error(1, vector <long double>(1));
-	return error;
+
 }
 
 
-int Matrix::determinant() {
-	int det = 0;
+
+Polynom Matrix::charac(Matrix b) {
+	vector<long double> res(lines + 1);
+	Polynom ans(res);
+	if (lines == rows) {
+		if (lines == 1) {
+			if (b.arr[0][0] == 1) {
+				res[1] = -1;
+			}
+			res[0] = arr[0][0];
+			return Polynom(res);
+		}
+		vector <vector <long double>> ivan(lines - 1, vector <long double>(rows - 1));
+		vector <vector <long double>> bivan(lines - 1, vector <long double>(rows - 1));
+		for (int elem = 0; elem < rows; elem++) {
+			for (int line = 1; line < lines; line++) {
+					for (int row = 0; row < rows; row++) {
+						if (row < elem) {
+							ivan[line - 1][row] = arr[line][row];
+							bivan[line - 1][row] = b.arr[line][row];
+						}
+						if (row > elem) {
+							ivan[line - 1][row - 1] = arr[line][row];
+							bivan[line - 1][row - 1] = b.arr[line][row - 1];
+						}
+					}
+			}
+
+
+
+			if (b.arr[0][elem] == 0) {
+				ans = ans + Matrix(ivan).charac(bivan) * (arr[0][elem] * pow(-1, elem));
+			}
+			else {
+				vector <long double> t = { arr[0][elem], -1 };
+				ans = ans + Matrix(ivan).charac(bivan) * (Polynom(t) * pow(-1, elem));
+			}
+		}
+	}
+	return ans;
+}
+
+
+long double Matrix::determinant() {
+	long double det = 0;
 	if (lines == rows) {
 		if (lines == 1) {
 			return arr[0][0];
@@ -182,6 +381,17 @@ int Matrix::solve() {
 			coef[i][pos] = 1;
 
 
+			cout << "------------------------------------------------" << endl;
+			cout << "coef: " << endl;
+			for (int g = 0; g < lines; g++) {
+				for (int h = 0; h < rows - 1; h++) {
+					cout << coef[g][h] << " ";
+				}
+				cout << num[g] << endl;
+			}
+			cout << "------------------------------------------------";
+
+
 
 			for (int t = pos + 1; t < rows - 1; t++) {
 				if (random[t]) {
@@ -189,7 +399,13 @@ int Matrix::solve() {
 				}
 				else {
 					for (int d = t + 1; d < rows; d++) {
+						cout << ans[pos][d] << endl;
 						ans[pos][d] += ((-1) * coef[i][t]) * ans[t][d];
+						cout << "coef[" << i << "][" << t << "]" << " " << coef[i][t] << endl;
+						cout << "ans[" << t << "][" << d << "]" << " " << ans[t][d] << endl;
+						cout << "+" << ((-1) * coef[i][t]) * ans[t][d] << endl;
+						cout << ans[pos][d] << endl;
+						cout << endl;
 					}
 					ans[pos][t] = 0;
 				}
@@ -405,11 +621,22 @@ int main() {
 	
 	if (s == "solve") {
 		cout << "Solution: " << endl;
+		(a.gaussian()).output_mat();
+		cout << endl;
 		(a.gaussian()).solve();
 	}
 	if (s == "jordan") {
-		cout << "Jordan form: " << endl;
+		cout << "jordan form: " << endl;
 		(a.jordan()).output_mat();
+	}
+
+	if (s == "polynom") {
+		vector <vector <long double>> bb(lines1, vector <long double>(rows1));
+		for (int i = 0; i < lines1; i++) {
+			bb[i][i] = 1;
+		}
+		cout << "Characteristic polynomial: " << endl;
+		(a.charac(Matrix(bb))).output_pol();
 	}
 	return 0;
 }
