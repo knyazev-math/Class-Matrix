@@ -80,7 +80,7 @@
 ### 2) Operation with one matrix
 
 
-  <command: det, m^t, gauss or jordan>
+  <command: det, m^t, gauss, polynom or jordan>
   
   <enter first matrix sides: strings, rows>
   
