@@ -15,8 +15,10 @@
   6) gauss — gaussian elimination
 
   7) solve — solves system of linear equations
-
-  8) jordan — finds the jordan form of the matrix (currently operating only for 2x2)
+  
+  8) polynom — finds the characteristic polynomial for a square matrix
+  
+  9 jordan — finds the jordan form of the matrix (currently operating only for 2x2)
 
 
 
