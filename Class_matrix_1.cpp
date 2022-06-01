@@ -32,17 +32,7 @@ public:
 
 
 Polynom::Polynom(vector <long double> m) {
-	int pos = -1;
-	for (int i = m.size() - 1; i > -1; i--) {
-		if (m[i] != 0) {
-			pos = i;
-			break;
-		}
-	}
-	if (pos == -1) {
-		pos = 1;
-	}
-	deg = pos;
+	deg = m.size() - 1;
 	pol = m;
 
 }
@@ -51,7 +41,12 @@ Polynom::Polynom(vector <long double> m) {
 Polynom Polynom:: operator+(Polynom p) {
 	vector <long double> ans(max(deg, p.deg) + 1);
 	for (int i = 0; i < ans.size(); i++) {
-		ans[i] = pol[i] + p.pol[i];
+		if (i < deg + 1) {
+			ans[i] += pol[i];
+		}
+		if (i < p.deg + 1) {
+			ans[i] += p.pol[i];
+		}
 	}
 	return Polynom(ans);
 }
@@ -59,7 +54,7 @@ Polynom Polynom:: operator+(Polynom p) {
 
 Polynom Polynom:: operator*(long double a) {
 	vector <long double> ans(deg + 1);
-	for (int i = 0; i < ans.size(); i++) {
+	for (int i = 0; i < deg + 1; i++) {
 		ans[i] = pol[i] * a;
 	}
 	return Polynom(ans);
@@ -90,11 +85,21 @@ Polynom Polynom:: operator/(Polynom p) {
 
 void Polynom::output_pol() {
 	bool zero = true;
-	for (int i = deg; i > -1; i--) {
+	for (int i = pol.size() - 1; i > -1; i--) {
 		if (pol[i] * pol[i] == 1) {
 			if (zero) {
-				if (i == 0) {
-					cout << pol[i];
+				if (i * i - i == 0) {
+					if (i == 0) {
+						cout << pol[i];
+					}
+					else {
+						if (i == 1) {
+							cout << "x";
+						}
+						else {
+							cout << "-x";
+						}
+					}
 				}
 				else {
 					if (pol[i] == 1) {
@@ -106,12 +111,22 @@ void Polynom::output_pol() {
 				}
 			}
 			else {
-				if (i == 0) {
+				if (i * i - i == 0) {
 					if (pol[i] == 1) {
-						cout << " + " << pol[i];
+						if (i == 0) {
+							cout << " + " << pol[i];
+						}
+						else {
+							cout << " + x";
+						}
 					}
 					else {
-						cout << " - " << pol[i];
+						if (i == 0) {
+							cout << " - 1";
+						}
+						else {
+							cout << " - x";
+						}
 					}
 				}
 				else {
@@ -128,20 +143,35 @@ void Polynom::output_pol() {
 		else {
 			if (pol[i] != 0) {
 				if (zero) {
-					if (i == 0) {
-						cout << pol[i];
+					if (i * i - i == 0) {
+						if (i == 1) {
+							cout << pol[i] << "*x";
+						}
+						else {
+							cout << pol[i];
+						}
 					}
 					else {
 						cout << pol[i] << "*x^" << i;
 					}
 				}
 				else {
-					if (i == 0) {
-						if (pol[i] > 0) {
-							cout << " + " << pol[i];
+					if (i * i - i == 0) {
+						if (i == 0) {
+							if (pol[i] > 0) {
+								cout << " + " << pol[i];
+							}
+							else {
+								cout << " - " << abs(pol[i]);
+							}
 						}
 						else {
-							cout << pol[i];
+							if (pol[i] > 0) {
+								cout << " + " << pol[i] << "*x";
+							}
+							else {
+								cout << " - " << abs(pol[i]) << "*x";
+							}
 						}
 					}
 					else {
@@ -149,7 +179,7 @@ void Polynom::output_pol() {
 							cout << " + " << pol[i] << "*x^" << i;
 						}
 						else {
-							cout << pol[i] << "*x^" << i;
+							cout << " - " << abs(pol[i]) << "*x^" << i;
 						}
 					}
 				}
@@ -297,20 +327,18 @@ Polynom Matrix::charac(Matrix b) {
 						}
 						if (row > elem) {
 							ivan[line - 1][row - 1] = arr[line][row];
-							bivan[line - 1][row - 1] = b.arr[line][row - 1];
+							bivan[line - 1][row - 1] = b.arr[line][row];
 						}
 					}
 			}
 
-
-
 			if (b.arr[0][elem] == 0) {
-				ans = ans + Matrix(ivan).charac(bivan) * (arr[0][elem] * pow(-1, elem));
+				ans = ans + (Matrix(ivan).charac(bivan)) * (arr[0][elem] * pow(-1, elem));
 			}
 			else {
-				vector <long double> t = { arr[0][elem], -1 };
-				ans = ans + Matrix(ivan).charac(bivan) * (Polynom(t) * pow(-1, elem));
+				ans = ans + Matrix(ivan).charac(bivan) * (Polynom({ arr[0][elem], -1 }) * pow(-1, elem));
 			}
+
 		}
 	}
 	return ans;
@@ -379,7 +407,6 @@ int Matrix::solve() {
 			num[i] /= coef[i][pos];
 			ans[pos][rows - 1] = num[i];
 			coef[i][pos] = 1;
-
 
 			for (int t = pos + 1; t < rows - 1; t++) {
 				if (random[t]) {
@@ -617,6 +644,7 @@ int main() {
 		for (int i = 0; i < lines1; i++) {
 			bb[i][i] = 1;
 		}
+		Matrix(bb).output_mat();
 		cout << "Characteristic polynomial: " << endl;
 		(a.charac(Matrix(bb))).output_pol();
 	}
