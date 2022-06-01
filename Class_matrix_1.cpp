@@ -381,31 +381,13 @@ int Matrix::solve() {
 			coef[i][pos] = 1;
 
 
-			cout << "------------------------------------------------" << endl;
-			cout << "coef: " << endl;
-			for (int g = 0; g < lines; g++) {
-				for (int h = 0; h < rows - 1; h++) {
-					cout << coef[g][h] << " ";
-				}
-				cout << num[g] << endl;
-			}
-			cout << "------------------------------------------------";
-
-
-
 			for (int t = pos + 1; t < rows - 1; t++) {
 				if (random[t]) {
 					ans[pos][t] += (-1) * coef[i][t];
 				}
 				else {
 					for (int d = t + 1; d < rows; d++) {
-						cout << ans[pos][d] << endl;
 						ans[pos][d] += ((-1) * coef[i][t]) * ans[t][d];
-						cout << "coef[" << i << "][" << t << "]" << " " << coef[i][t] << endl;
-						cout << "ans[" << t << "][" << d << "]" << " " << ans[t][d] << endl;
-						cout << "+" << ((-1) * coef[i][t]) * ans[t][d] << endl;
-						cout << ans[pos][d] << endl;
-						cout << endl;
 					}
 					ans[pos][t] = 0;
 				}
