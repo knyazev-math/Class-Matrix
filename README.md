@@ -18,7 +18,7 @@
   
   8) polynom — finds the characteristic polynomial for a square matrix
   
-  9 jordan — finds the jordan form of the matrix (currently operating only for 2x2)
+  9) jordan — finds the jordan form of the matrix (currently operating only for 2x2)
 
 
 
